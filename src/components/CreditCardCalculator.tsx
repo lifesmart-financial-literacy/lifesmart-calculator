@@ -225,6 +225,7 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
                   value={inputs.balanceCarriedPercent}
                   onChange={(e) => handleInputChange('balanceCarriedPercent', Number(e.target.value))}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  aria-label="Percentage of balance carried over"
                 />
               </div>
             </div>
@@ -260,29 +261,6 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
           </div>
         </div>
 
-        {/* White Summary Box - Centered */}
-        <div className="flex justify-center mb-6">
-          <div className={`p-6 rounded-lg text-center w-full max-w-sm ${
-            darkMode ? 'bg-white text-gray-900' : 'bg-white text-gray-700'
-          }`}>
-            {/* Your Current Interest Charge */}
-            <div className="mb-6 mt-4">
-              <div className="text-base font-medium mb-2">Your Current Interest Charge</div>
-              <div className="text-3xl font-bold mb-1" style={{ color: 'rgb(39, 26, 104)' }}>
-                ${annualInterest.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} annually
-              </div>
-              <div className="text-sm text-gray-500 mt-3">
-                Average monthly balance: ${carriedBalance.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} | APR: {inputs.apr}%
-              </div>
-            </div>
-
-            {/* Interest charge with SPZero */}
-            <div>
-              <div className="text-base font-medium mb-2">Interest charge with SPZero</div>
-              <div className="text-3xl font-bold mb-1" style={{ color: 'rgb(39, 26, 104)' }}>$0 annually</div>
-            </div>
-          </div>
-        </div>
 
         {/* Bottom Summary Statement */}
         <div className="text-center px-4">
@@ -359,28 +337,42 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
           </div>
         </div>
 
-        {/* Main Calculator Card - Conditional Mobile/Desktop */}
+        {/* Calculator and Investment Chart side by side */}
         {isMobile ? (
-          <MobileCalculatorCard />
+          <>
+            <MobileCalculatorCard />
+            <div className="mt-8">
+              <InvestmentChart
+                monthlyContribution={monthlySavings}
+                annualRate={investmentInputs.returnRate ?? 9}
+                maxYears={investmentInputs.timePeriod ?? 10}
+                darkMode={darkMode}
+                investmentInputs={investmentInputs}
+                onInvestmentChange={handleInvestmentChange}
+              />
+            </div>
+          </>
         ) : (
         <div className={`relative overflow-hidden rounded-lg shadow-lg`}
-      style={{
-        background: darkMode
-          ? 'linear-gradient(to bottom right, #8b3dff, #000)'
-          : 'linear-gradient(to bottom right, #ffffff, #c8a2c8)', // White to lilac gradient
-        border: '1px solid transparent',
-        backgroundImage: darkMode
-          ? 'linear-gradient(to bottom right, #8b3dff, #000), linear-gradient(to bottom right, transparent, transparent 40%)'
-          : 'linear-gradient(to bottom right, #ffffff, #c8a2c8), linear-gradient(to bottom right, transparent, transparent 40%)', // White to lilac gradient for border
-        backgroundOrigin: 'border-box',
-        backgroundClip: 'padding-box, border-box'
-      }}>
+          style={{
+            background: darkMode
+              ? 'linear-gradient(to bottom right, #8b3dff, #000)'
+              : 'linear-gradient(to bottom right, #ffffff, #c8a2c8)',
+            border: '1px solid transparent',
+            backgroundImage: darkMode
+              ? 'linear-gradient(to bottom right, #8b3dff, #000), linear-gradient(to bottom right, transparent, transparent 40%)'
+              : 'linear-gradient(to bottom right, #ffffff, #c8a2c8), linear-gradient(to bottom right, transparent, transparent 40%)',
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box'
+          }}>
           <div className="p-4 sm:p-6 lg:p-8">
-            <div className="flex lg:flex-row flex-col gap-6 lg:gap-8 lg:items-center items-start">
+            {/* Top Row - Calculator Inputs on Left, Investment Inputs on Right */}
+            <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 mb-6 lg:mb-8">
               {/* Left Section - Calculator Inputs */}
-              <div className="flex-1 lg:w-1/2 space-y-4 sm:space-y-6">
+              <div className="flex-1 max-w-2xl">
+                <div className="space-y-3 sm:space-y-4">
                 {/* Title */}
-                <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 ${
+                <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4 ${
                   darkMode ? 'text-white' : 'text-gray-900'
                 }`}>
                   See what 0% APR could save you
@@ -517,58 +509,96 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
                     <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm font-medium text-gray-500">%</span>
                   </div>
                 </div>
+
+                {/* Bottom Summary Statement */}
+                <div className="text-center mt-4 sm:mt-6">
+                  <p className="text-base sm:text-lg text-white">
+                    You would save{' '}
+                    <span className="text-2xl sm:text-3xl font-bold" style={{ color: '#0067f7' }}>
+                      ${annualInterest.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}
+                    </span>
+                    {' '}annually, back into your pocket.
+                  </p>
+                </div>
+                </div>
               </div>
 
-              {/* Right Section - Savings Summary Card */}
-              <div className="flex-1 lg:w-1/2 flex justify-center">
-                <div className={`p-4 sm:p-6 rounded-lg text-center w-full max-w-sm sm:w-80 h-72 sm:h-80 ${
-                  darkMode ? 'bg-white text-gray-900' : 'bg-white text-gray-700'
-                }`}>
-                  {/* Your Current Interest Charge */}
-                  <div className="mb-6 mt-4">
-                    <div className="text-sm sm:text-base font-medium mb-2">Your Current Interest Charge</div>
-                    <div className="text-2xl sm:text-3xl font-bold mb-1" style={{ color: 'rgb(39, 26, 104)' }}>
-                      ${annualInterest.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} annually
-                    </div>
-                    <div className="text-xs sm:text-sm text-gray-500 mt-3">
-                      Average monthly balance: ${carriedBalance.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} | APR: {inputs.apr}%
-                    </div>
-                  </div>
+              {/* Right Section - Investment Title and Inputs */}
+              <div className="flex-1 max-w-2xl">
+                <div className="space-y-4">
+                  {/* Title */}
+                  <h2 className={`text-lg sm:text-xl md:text-2xl font-semibold mb-4 ${
+                    darkMode ? 'text-white' : 'text-gray-900'
+                  }`}>
+                    Let's imagine you put that saved money into an investment portfolio for the next ten years
+                  </h2>
 
-                  {/* Interest charge with SPZero */}
-                  <div>
-                    <div className="text-sm sm:text-base font-medium mb-2">Interest charge with SPZero</div>
-                    <div className="text-2xl sm:text-3xl font-bold mb-1" style={{ color: 'rgb(39, 26, 104)' }}>$0 annually</div>
-                  </div>
+                  {/* Input fields */}
+                  {investmentInputs && handleInvestmentChange && (
+                    <div className="space-y-4">
+                      <div className="group/input">
+                        <label className={`block text-sm font-medium mb-2 ${
+                          darkMode ? 'text-gray-300' : 'text-gray-700'
+                        }`}>
+                          Investment Time Period (Years)
+                        </label>
+                        <input
+                          type="number"
+                          value={investmentInputs.timePeriod || ''}
+                          onChange={(e) => {
+                            const value = e.target.value === '' ? null : Number(e.target.value);
+                            handleInvestmentChange('timePeriod', value);
+                          }}
+                          className="w-full px-3 sm:px-4 py-3 sm:py-4 text-base sm:text-lg border border-gray-300 text-gray-900 placeholder-gray-500 rounded-md bg-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                          min="1"
+                          max="30"
+                          placeholder="10"
+                          aria-label="Investment time period in years"
+                        />
+                      </div>
+                      <div className="group/input">
+                        <label className={`block text-sm font-medium mb-2 ${
+                          darkMode ? 'text-gray-300' : 'text-gray-700'
+                        }`}>
+                          Expected Annual Return Rate (%)
+                        </label>
+                        <input
+                          type="number"
+                          value={investmentInputs.returnRate || ''}
+                          onChange={(e) => {
+                            const value = e.target.value === '' ? null : Number(e.target.value);
+                            handleInvestmentChange('returnRate', value);
+                          }}
+                          className="w-full px-3 sm:px-4 py-3 sm:py-4 text-base sm:text-lg border border-gray-300 text-gray-900 placeholder-gray-500 rounded-md bg-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                          min="0"
+                          max="20"
+                          step="0.1"
+                          placeholder="9"
+                          aria-label="Annual return rate percentage"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Bottom Summary Statement centered at bottom of card */}
-            <div className="text-center mt-8">
-              <p className="text-lg text-white">
-                You would save{' '}
-                <span className="text-3xl font-bold" style={{ color: '#0067f7' }}>
-                  ${annualInterest.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}
-                </span>
-                {' '}annually, back into your pocket.
-              </p>
+            {/* Investment Chart Section - Full Width */}
+            <div className="w-full">
+              <InvestmentChart
+                monthlyContribution={monthlySavings}
+                annualRate={investmentInputs.returnRate ?? 9}
+                maxYears={investmentInputs.timePeriod ?? 10}
+                darkMode={darkMode}
+                investmentInputs={investmentInputs}
+                onInvestmentChange={handleInvestmentChange}
+                noCardWrapper={true}
+                hideTitleAndInputs={true}
+              />
             </div>
           </div>
         </div>
         )}
-
-        {/* Investment Chart with Inputs */}
-        <div className="mt-8">
-          <InvestmentChart
-            monthlyContribution={monthlySavings}
-            annualRate={investmentInputs.returnRate ?? 9}
-            maxYears={investmentInputs.timePeriod ?? 10}
-            darkMode={darkMode}
-            investmentInputs={investmentInputs}
-            onInvestmentChange={handleInvestmentChange}
-          />
-        </div>
 
         {/* Conclusion Card - Total Savings Over Time */}
         <div className={`relative overflow-hidden rounded-lg shadow-lg mt-8`}
