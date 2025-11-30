@@ -37,6 +37,8 @@ interface InvestmentChartProps {
   darkMode?: boolean;
   investmentInputs?: InvestmentInputs;
   onInvestmentChange?: (field: keyof InvestmentInputs, value: number | null) => void;
+  noCardWrapper?: boolean;
+  hideTitleAndInputs?: boolean;
 }
 
 const InvestmentChart: React.FC<InvestmentChartProps> = ({
@@ -45,7 +47,9 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({
   maxYears = 10,
   darkMode = false,
   investmentInputs,
-  onInvestmentChange
+  onInvestmentChange,
+  noCardWrapper = false,
+  hideTitleAndInputs = false
 }) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
@@ -225,32 +229,23 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({
     },
   };
 
-  return (
-    <div className={`relative overflow-hidden rounded-lg shadow-lg`}
-      style={{
-        background: darkMode
-          ? 'linear-gradient(to bottom right, #8b3dff, #000)'
-          : 'linear-gradient(to bottom right, #ffffff, #c8a2c8)', // White to lilac gradient
-        border: '1px solid transparent',
-        backgroundImage: darkMode
-          ? 'linear-gradient(to bottom right, #8b3dff, #000), linear-gradient(to bottom right, transparent, transparent 40%)'
-          : 'linear-gradient(to bottom right, #ffffff, #c8a2c8), linear-gradient(to bottom right, transparent, transparent 40%)', // White to lilac gradient for border
-        backgroundOrigin: 'border-box',
-        backgroundClip: 'padding-box, border-box'
-      }}>
-      <div className="p-4 sm:p-6 lg:p-8">
-        {/* Title */}
-        <div className="text-center mb-6 sm:mb-8">
-          <h2 className={`text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-4 sm:mb-6 px-2 ${
-            darkMode ? 'text-white' : 'text-gray-900'
-          }`}>
-            Let's imagine you put that saved money into an investment portfolio for the next ten years
-          </h2>
-        </div>
+  const content = (
+    <div className={noCardWrapper ? "p-0" : "p-4 sm:p-6 lg:p-8"}>
+        {!hideTitleAndInputs && (
+          <>
+            {/* Title */}
+            <div className="text-center mb-6 sm:mb-8">
+              <h2 className={`text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-4 sm:mb-6 px-2 ${
+                darkMode ? 'text-white' : 'text-gray-900'
+              }`}>
+                Let's imagine you put that saved money into an investment portfolio for the next ten years
+              </h2>
+            </div>
 
-        {/* Input fields side by side */}
-        {investmentInputs && onInvestmentChange && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+            {/* Input fields side by side */}
+            {investmentInputs && onInvestmentChange && !hideTitleAndInputs && (
+              <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
             <div className="group/input">
               <label className={`block text-sm font-medium mb-2 ${
                 darkMode ? 'text-gray-300' : 'text-gray-700'
@@ -295,6 +290,9 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({
               />
             </div>
           </div>
+              </>
+            )}
+          </>
         )}
 
         {/* Chart Container */}
@@ -327,7 +325,27 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({
             </p>
           </div>
         </div>
-      </div>
+    </div>
+  );
+
+  if (noCardWrapper) {
+    return content;
+  }
+
+  return (
+    <div className={`relative overflow-hidden rounded-lg shadow-lg`}
+      style={{
+        background: darkMode
+          ? 'linear-gradient(to bottom right, #8b3dff, #000)'
+          : 'linear-gradient(to bottom right, #ffffff, #c8a2c8)', // White to lilac gradient
+        border: '1px solid transparent',
+        backgroundImage: darkMode
+          ? 'linear-gradient(to bottom right, #8b3dff, #000), linear-gradient(to bottom right, transparent, transparent 40%)'
+          : 'linear-gradient(to bottom right, #ffffff, #c8a2c8), linear-gradient(to bottom right, transparent, transparent 40%)', // White to lilac gradient for border
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box'
+      }}>
+      {content}
     </div>
   );
 };
