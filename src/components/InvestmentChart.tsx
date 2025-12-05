@@ -67,6 +67,11 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({
     const monthlyRate = annualRate / 100 / 12;
     const totalMonths = years * 12;
 
+    // Handle zero-rate case: when rate is 0%, future value is simply total contributions
+    if (annualRate === 0 || monthlyRate === 0) {
+      return Math.round(monthlyContribution * totalMonths);
+    }
+
     // Future value of annuity formula
     const futureValue = monthlyContribution * ((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate);
 

@@ -102,6 +102,13 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
   const calculateInvestmentFinalValue = (years: number, rate: number, monthly: number) => {
     const monthlyRate = rate / 100 / 12;
     const totalMonths = years * 12;
+
+    // Handle zero-rate case: when rate is 0%, future value is simply total contributions
+    if (rate === 0 || monthlyRate === 0) {
+      return Math.round(monthly * totalMonths);
+    }
+
+    // Future value of annuity formula
     const futureValue = monthly * ((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate);
     return Math.round(futureValue);
   };
@@ -324,26 +331,32 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
                   darkMode
                     ? 'bg-gradient-to-r from-purple-600 to-indigo-600 focus:ring-purple-300'
                     : 'bg-gradient-to-r from-purple-400 to-indigo-400 focus:ring-purple-300'
-                } shadow-lg hover:shadow-xl transform hover:scale-105`}
+                } shadow-lg hover:shadow-xl hover:scale-105`}
                 title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+                type="button"
               >
                 {/* Toggle Circle */}
-              <div className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-500 ease-in-out transform ${
-                darkMode ? 'translate-x-7' : 'translate-x-1'
-              }`}>
-                <div className="flex items-center justify-center h-full w-full">
-                  <div className={`transition-all duration-500 ${
-                    darkMode ? 'opacity-0 scale-0' : 'opacity-100 scale-100'
-                  }`}>
-                    <IoSunny className="text-yellow-500 text-base" />
-                  </div>
-                  <div className={`absolute transition-all duration-500 ${
-                    darkMode ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
-                  }`}>
-                    <IoMoon className="text-purple-600 text-base" />
+                <div
+                  className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-500 ease-in-out ${
+                    darkMode ? 'translate-x-7' : 'translate-x-0'
+                  }`}
+                  style={{
+                    willChange: 'transform'
+                  }}
+                >
+                  <div className="flex items-center justify-center h-full w-full relative">
+                    <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${
+                      darkMode ? 'opacity-0 scale-0' : 'opacity-100 scale-100'
+                    }`}>
+                      <IoSunny className="text-yellow-500 text-base" />
+                    </div>
+                    <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${
+                      darkMode ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
+                    }`}>
+                      <IoMoon className="text-purple-600 text-base" />
+                    </div>
                   </div>
                 </div>
-              </div>
               </button>
             )}
             {config.mode !== 'auto' && <div className="w-16"></div>} {/* Spacer when toggle hidden */}
