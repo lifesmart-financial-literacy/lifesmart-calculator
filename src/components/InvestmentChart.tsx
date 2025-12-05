@@ -39,6 +39,7 @@ interface InvestmentChartProps {
   onInvestmentChange?: (field: keyof InvestmentInputs, value: number | null) => void;
   noCardWrapper?: boolean;
   hideTitleAndInputs?: boolean;
+  hideSummaryAndDisclaimer?: boolean;
 }
 
 const InvestmentChart: React.FC<InvestmentChartProps> = ({
@@ -49,7 +50,8 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({
   investmentInputs,
   onInvestmentChange,
   noCardWrapper = false,
-  hideTitleAndInputs = false
+  hideTitleAndInputs = false,
+  hideSummaryAndDisclaimer = false
 }) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
@@ -302,29 +304,32 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({
           </div>
         </div>
 
-        {/* Summary Box matching the design */}
-        <div className="mb-6 sm:mb-8">
-          <div className={`p-4 sm:p-6 rounded-lg text-center ${
-            darkMode ? 'bg-white text-gray-900' : 'bg-white text-gray-700'
-          }`}>
-            <p className="text-sm sm:text-base md:text-lg mb-2">
-              By switching to <strong>SPZero's 0% APR card</strong>, you could save <strong style={{ color: '#0067f7' }}>${(monthlyContribution * 12 * maxYears).toLocaleString()}</strong> in interest payments over the next {maxYears} years, which if invested, could reach a value of <strong style={{ color: '#0067f7' }}>${finalValue.toLocaleString()}</strong>
-            </p>
-          </div>
-        </div>
+        {/* Summary Box and Disclaimer - Side by side */}
+        {!hideSummaryAndDisclaimer && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6 sm:mb-8">
+            {/* Summary Box matching the design */}
+            <div className={`p-4 sm:p-6 rounded-lg text-center ${
+              darkMode ? 'bg-white text-gray-900' : 'bg-white text-gray-700'
+            }`}>
+              <p className="text-sm sm:text-base md:text-lg mb-2">
+                By switching to <strong>SPZero's 0% APR card</strong>, you could save <strong style={{ color: '#0067f7' }}>${(monthlyContribution * 12 * maxYears).toLocaleString()}</strong> in interest payments over the next {maxYears} years, which if invested, could reach a value of <strong style={{ color: '#0067f7' }}>${finalValue.toLocaleString()}</strong>
+              </p>
+            </div>
 
-        {/* Disclaimer */}
-        <div className={`flex items-start ${darkMode ? 'text-white' : 'text-gray-600'}`}>
-          <IoWarning className="text-yellow-500 text-lg mr-2 mt-0.5 flex-shrink-0" />
-          <div>
-            <p className="font-bold text-sm mb-1">Important Disclaimer</p>
-            <p className="text-xs leading-relaxed">
-              This is a simplified calculation for educational purposes. Assumes monthly contributions with {annualRate}% annual return, compounded monthly.
-              Actual investment returns may vary significantly. Past performance does not guarantee future results.
-              Consider consulting with a financial advisor before making investment decisions. This tool is not financial advice.
-            </p>
+            {/* Disclaimer */}
+            <div className={`flex items-start ${darkMode ? 'text-white' : 'text-gray-600'}`}>
+              <IoWarning className="text-yellow-500 text-lg mr-2 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-bold text-sm mb-1">Important Disclaimer</p>
+                <p className="text-xs leading-relaxed">
+                  This is a simplified calculation for educational purposes. Assumes monthly contributions with {annualRate}% annual return, compounded monthly.
+                  Actual investment returns may vary significantly. Past performance does not guarantee future results.
+                  Consider consulting with a financial advisor before making investment decisions. This tool is not financial advice.
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
     </div>
   );
 

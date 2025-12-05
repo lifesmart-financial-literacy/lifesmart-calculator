@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IoMoon, IoSunny } from 'react-icons/io5';
+import { IoMoon, IoSunny, IoWarning } from 'react-icons/io5';
 import { AppConfig } from '../App';
 import InvestmentChart from './InvestmentChart';
 
@@ -97,6 +97,19 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
   const carriedBalance = inputs.monthlySpend - paidOffBalance;
   const annualInterest = carriedBalance * (inputs.apr / 100);
   const monthlySavings = annualInterest / 12;
+
+  // Calculate investment final value (same formula as InvestmentChart)
+  const calculateInvestmentFinalValue = (years: number, rate: number, monthly: number) => {
+    const monthlyRate = rate / 100 / 12;
+    const totalMonths = years * 12;
+    const futureValue = monthly * ((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate);
+    return Math.round(futureValue);
+  };
+
+  const investmentYears = investmentInputs.timePeriod ?? 10;
+  const investmentRate = investmentInputs.returnRate ?? 9;
+  const investmentFinalValue = calculateInvestmentFinalValue(investmentYears, investmentRate, monthlySavings);
+  const totalInterestSaved = monthlySavings * 12 * investmentYears;
 
   const handleInputChange = (field: keyof CalculatorInputs, value: number) => {
     setInputs(prev => ({ ...prev, [field]: value }));
@@ -236,7 +249,7 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
             <label className={`block text-sm font-medium mb-2 ${
               darkMode ? 'text-white' : 'text-gray-700'
             }`}>
-              Average balance paid off each month
+              Average interest rate each month APR on your credit card
             </label>
             <div className="relative">
               <input
@@ -366,10 +379,10 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
             backgroundClip: 'padding-box, border-box'
           }}>
           <div className="p-4 sm:p-6 lg:p-8">
-            {/* Top Row - Calculator Inputs on Left, Investment Inputs on Right */}
+            {/* Top Row - Calculator Inputs on Left, Investment Inputs and Chart on Right */}
             <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 mb-6 lg:mb-8">
-              {/* Left Section - Calculator Inputs */}
-              <div className="flex-1 max-w-2xl">
+              {/* Left Section - Calculator Inputs (1/3 width) */}
+              <div className="lg:w-1/3">
                 <div className="space-y-3 sm:space-y-4">
                 {/* Title */}
                 <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4 ${
@@ -488,7 +501,7 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
                   <label className={`block text-sm font-medium mb-2 ${
                     darkMode ? 'text-white' : 'text-gray-700'
                   }`}>
-                    Average balance paid off each month
+                    Average interest rate each month APR on your credit card
                   </label>
                   <div className="relative">
                     <input
@@ -523,8 +536,8 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
                 </div>
               </div>
 
-              {/* Right Section - Investment Title and Inputs */}
-              <div className="flex-1 max-w-2xl">
+              {/* Right Section - Investment Title, Inputs, and Chart (2/3 width) */}
+              <div className="lg:w-2/3">
                 <div className="space-y-4">
                   {/* Title */}
                   <h2 className={`text-lg sm:text-xl md:text-2xl font-semibold mb-4 ${
@@ -533,9 +546,9 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
                     Let's imagine you put that saved money into an investment portfolio for the next ten years
                   </h2>
 
-                  {/* Input fields */}
+                  {/* Input fields - Side by side */}
                   {investmentInputs && handleInvestmentChange && (
-                    <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="group/input">
                         <label className={`block text-sm font-medium mb-2 ${
                           darkMode ? 'text-gray-300' : 'text-gray-700'
@@ -579,22 +592,48 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
                       </div>
                     </div>
                   )}
+
+                  {/* Investment Chart Section - Inside Right Div */}
+                  <div className="w-full mt-6">
+                    <InvestmentChart
+                      monthlyContribution={monthlySavings}
+                      annualRate={investmentInputs.returnRate ?? 9}
+                      maxYears={investmentInputs.timePeriod ?? 10}
+                      darkMode={darkMode}
+                      investmentInputs={investmentInputs}
+                      onInvestmentChange={handleInvestmentChange}
+                      noCardWrapper={true}
+                      hideTitleAndInputs={true}
+                      hideSummaryAndDisclaimer={true}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Investment Chart Section - Full Width */}
-            <div className="w-full">
-              <InvestmentChart
-                monthlyContribution={monthlySavings}
-                annualRate={investmentInputs.returnRate ?? 9}
-                maxYears={investmentInputs.timePeriod ?? 10}
-                darkMode={darkMode}
-                investmentInputs={investmentInputs}
-                onInvestmentChange={handleInvestmentChange}
-                noCardWrapper={true}
-                hideTitleAndInputs={true}
-              />
+            {/* Summary Box and Disclaimer - Full Width */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6 lg:mt-8">
+              {/* Summary Box matching the design */}
+              <div className={`p-4 sm:p-6 rounded-lg text-center ${
+                darkMode ? 'bg-white text-gray-900' : 'bg-white text-gray-700'
+              }`}>
+                <p className="text-sm sm:text-base md:text-lg mb-2">
+                  By switching to <strong>SPZero's 0% APR card</strong>, you could save <strong style={{ color: '#0067f7' }}>${totalInterestSaved.toLocaleString()}</strong> in interest payments over the next {investmentYears} years, which if invested, could reach a value of <strong style={{ color: '#0067f7' }}>${investmentFinalValue.toLocaleString()}</strong>
+                </p>
+              </div>
+
+              {/* Disclaimer */}
+              <div className={`flex items-start ${darkMode ? 'text-white' : 'text-gray-600'}`}>
+                <IoWarning className="text-yellow-500 text-lg mr-2 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="font-bold text-sm mb-1">Important Disclaimer</p>
+                  <p className="text-xs leading-relaxed">
+                    This is a simplified calculation for educational purposes. Assumes monthly contributions with {investmentRate}% annual return, compounded monthly.
+                    Actual investment returns may vary significantly. Past performance does not guarantee future results.
+                    Consider consulting with a financial advisor before making investment decisions. This tool is not financial advice.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
