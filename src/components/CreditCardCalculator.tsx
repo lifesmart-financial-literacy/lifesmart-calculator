@@ -327,7 +327,7 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
             {config.mode === 'auto' && (
               <button
                 onClick={() => setDarkMode(!darkMode)}
-                className={`relative w-14 h-8 rounded-full transition-all duration-500 ease-in-out focus:outline-none focus:ring-4 focus:ring-opacity-50 ${
+                className={`relative w-14 h-8 rounded-full transform transition-all duration-500 ease-in-out focus:outline-none focus:ring-4 focus:ring-opacity-50 ${
                   darkMode
                     ? 'bg-gradient-to-r from-purple-600 to-indigo-600 focus:ring-purple-300'
                     : 'bg-gradient-to-r from-purple-400 to-indigo-400 focus:ring-purple-300'
@@ -337,7 +337,7 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
               >
                 {/* Toggle Circle */}
                 <div
-                  className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-500 ease-in-out ${
+                  className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transform transition-all duration-500 ease-in-out ${
                     darkMode ? 'translate-x-7' : 'translate-x-0'
                   }`}
                   style={{
