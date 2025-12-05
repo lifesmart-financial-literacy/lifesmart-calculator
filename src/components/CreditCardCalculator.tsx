@@ -314,7 +314,7 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({ config }) =
               <h1 className={`text-3xl md:text-4xl font-bold mb-4 ${
                 darkMode ? 'text-white' : 'text-gray-900'
               }`}>
-                Credit Card Interest vs Investment Calculator
+                0% Interest Forever! Calculator
               </h1>
               <p className={`text-base md:text-lg max-w-4xl mx-auto ${
                 darkMode ? 'text-gray-300' : 'text-gray-600'
