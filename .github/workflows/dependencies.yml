@@ -72,6 +72,9 @@ jobs:
   create-update-pr:
     name: 📦 Create Update PR
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     needs: check-updates
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
 
@@ -210,11 +213,17 @@ jobs:
   security-updates:
     name: 🔒 Security Updates
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     timeout-minutes: 15
 
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: 🏗️ Setup Node.js
         uses: actions/setup-node@v4
