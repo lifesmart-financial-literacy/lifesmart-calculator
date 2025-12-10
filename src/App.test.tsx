@@ -1,8 +1,9 @@
 import { render, screen } from "@testing-library/react";
+import type { AppConfig } from "./App";
 import App from "./App";
 
-const defaultConfig = {
-  mode: "auto" as const,
+const defaultConfig: AppConfig = {
+  mode: "auto",
   transparentBackground: false,
   version: "1.0.0",
   source: "test",
