@@ -289,6 +289,9 @@ jobs:
   performance-alerts:
     name: 🚨 Performance Alerts
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
     needs: [lighthouse, bundle-analysis, load-testing, mobile-performance]
     if: always() && (needs.lighthouse.result == 'failure' || needs.bundle-analysis.result == 'failure')
 
