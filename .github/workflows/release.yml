@@ -56,7 +56,7 @@ jobs:
           npm run lint -- --max-warnings 0
           npx prettier --check "src/**/*.{js,jsx,ts,tsx,css,md,json}"
           npx tsc --noEmit
-          npm test -- --coverage --watchAll=false --passWithNoTests
+          npm test -- --coverage --run
           npm run build
 
       - name: 📊 Bundle size check

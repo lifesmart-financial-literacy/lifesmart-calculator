@@ -63,7 +63,7 @@ jobs:
       - name: 🧪 Run tests with coverage
         run: |
           echo "🧪 Running tests..."
-          npm test -- --coverage --watchAll=false --passWithNoTests
+          npm test -- --coverage --run
         env:
           CI: true
 

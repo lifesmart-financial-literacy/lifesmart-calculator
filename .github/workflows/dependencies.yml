@@ -163,7 +163,7 @@ jobs:
         run: |
           echo "🧪 Testing updated dependencies..."
           npm run lint
-          npm test -- --coverage --watchAll=false --passWithNoTests
+          npm test -- --coverage --run
           npm run build
         continue-on-error: true
 
@@ -250,7 +250,7 @@ jobs:
         run: |
           echo "🧪 Testing security updates..."
           npm run lint
-          npm test -- --coverage --watchAll=false --passWithNoTests
+          npm test -- --coverage --run
           npm run build
         continue-on-error: true
 
