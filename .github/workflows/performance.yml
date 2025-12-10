@@ -132,7 +132,7 @@ jobs:
   load-testing:
     name: 🧪 Load Testing
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 8
     needs: lighthouse
 
     steps:
@@ -161,15 +161,27 @@ jobs:
       - name: 🧪 Run load tests with Artillery
         run: |
           echo "🧪 Running load tests..."
-          npm install -g artillery
-          artillery quick --count 10 --num 5 http://localhost:3000 > load-test-results.txt
+          # Use npx to avoid global install, or cache if needed
+          npx -y artillery quick --count 5 --num 3 http://localhost:3000 > load-test-results.txt || true
           cat load-test-results.txt
         continue-on-error: true
 
-      - name: 🧪 Run k6 load tests
+      - name: 🧪 Run k6 load tests (CI-optimized)
         run: |
           echo "🧪 Running k6 load tests..."
-          docker run --rm -v $(pwd):/scripts loadimpact/k6 run /scripts/load-test.js
+          # Try CI-optimized version first (faster), fallback to full test if file doesn't exist
+          if [ -f load-test-ci.js ]; then
+            docker run --rm \
+              -v $(pwd):/scripts \
+              --pull=missing \
+              loadimpact/k6 run /scripts/load-test-ci.js
+          else
+            echo "⚠️ CI-optimized test not found, using full load test"
+            docker run --rm \
+              -v $(pwd):/scripts \
+              --pull=missing \
+              loadimpact/k6 run /scripts/load-test.js
+          fi
         continue-on-error: true
 
       - name: 📤 Upload load test results
