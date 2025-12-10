@@ -49,8 +49,8 @@ jobs:
       - name: 📊 Analyze dependency health
         run: |
           echo "📊 Analyzing dependency health..."
-          npx npm-check-updates --format json > ncu-results.json || true
-          npx npm-check-updates --format table || true
+          npx npm-check-updates --json > ncu-results.json || true
+          npx npm-check-updates || true
 
       - name: 🔒 Check for security vulnerabilities
         run: |
@@ -111,16 +111,16 @@ jobs:
           # Check for updates using npm-check-updates
           case $UPDATE_TYPE in
             "patch")
-              npx npm-check-updates --target patch --format json > updates.json
+              npx npm-check-updates --target patch --json > updates.json || echo "{}" > updates.json
               ;;
             "minor")
-              npx npm-check-updates --target minor --format json > updates.json
+              npx npm-check-updates --target minor --json > updates.json || echo "{}" > updates.json
               ;;
             "major")
-              npx npm-check-updates --target major --format json > updates.json
+              npx npm-check-updates --target major --json > updates.json || echo "{}" > updates.json
               ;;
             *)
-              npx npm-check-updates --format json > updates.json
+              npx npm-check-updates --json > updates.json || echo "{}" > updates.json
               ;;
           esac
 
