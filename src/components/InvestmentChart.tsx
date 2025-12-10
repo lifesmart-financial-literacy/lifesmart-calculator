@@ -53,8 +53,8 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({
   hideTitleAndInputs = false,
   hideSummaryAndDisclaimer = false
 }) => {
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const [_isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [_isAnimating, setIsAnimating] = useState<boolean>(false);
 
   useEffect(() => {
     setIsLoaded(true);
@@ -96,7 +96,7 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({
   const { labels, data, totalInvested } = generateChartData();
   const finalValue = data[data.length - 1] || 0;
   const finalInvested = totalInvested[totalInvested.length - 1] || 0;
-  const totalGains = finalValue - finalInvested;
+  const _totalGains = finalValue - finalInvested;
 
   const chartData = {
     labels,
@@ -151,13 +151,13 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({
         cornerRadius: 8,
         displayColors: false,
         callbacks: {
-          title: (context: any) => {
+          title: (context: Array<{ label?: string }>) => {
             if (context && context.length > 0 && context[0]) {
               return `Year ${context[0].label}`;
             }
             return 'Investment Data';
           },
-          label: (context: any) => {
+          label: (context: { parsed: { y: number } }) => {
             const value = context.parsed.y;
             return `Investment Value: $${value.toLocaleString()}`;
           },
@@ -213,7 +213,7 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({
             size: 10,
             weight: 'normal' as const,
           },
-          callback: function(value: any) {
+          callback: function(value: string | number) {
             return '$' + value.toLocaleString();
           },
         },
