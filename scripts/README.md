@@ -59,3 +59,85 @@ The script will automatically:
 5. Maintain proper chronological order
 
 This creates professional, readable changelogs that users and developers can easily understand.
+
+---
+
+### `test-workflows.sh` / `test-workflows.ps1`
+
+Helper scripts for testing GitHub Actions workflows locally using [`act`](https://github.com/nektos/act).
+
+**Features:**
+- 🚀 **Easy workflow testing** - Test workflows before pushing
+- 🎯 **Job-specific testing** - Run individual jobs or entire workflows
+- 🔐 **Secrets support** - Automatically uses `.secrets` file if present
+- ✅ **Pre-flight checks** - Verifies Docker and act are installed
+
+**Prerequisites:**
+- Docker Desktop installed and running
+- `act` CLI tool installed
+  - Windows: `choco install act-cli`
+  - macOS: `brew install act`
+  - Linux: See [act installation guide](https://github.com/nektos/act#installation)
+
+**Usage (Bash/Linux/macOS):**
+```bash
+# List available workflows
+./scripts/test-workflows.sh
+
+# Run a specific workflow
+./scripts/test-workflows.sh ci
+
+# Run a specific job
+./scripts/test-workflows.sh ci quality-checks
+
+# Run security workflow
+./scripts/test-workflows.sh security
+```
+
+**Usage (PowerShell/Windows):**
+```powershell
+# List available workflows
+.\scripts\test-workflows.ps1
+
+# Run a specific workflow
+.\scripts\test-workflows.ps1 ci
+
+# Run a specific job
+.\scripts\test-workflows.ps1 ci quality-checks
+
+# Run security workflow
+.\scripts\test-workflows.ps1 security
+```
+
+**Available Workflows:**
+- `ci` - Comprehensive CI/CD Pipeline
+- `security` - Security Scanning
+- `performance` - Performance Monitoring
+- `dependencies` - Dependency Management
+- `pr-validation` - PR Validation
+- `release` - Release Workflow
+
+**Secrets File:**
+Create a `.secrets` file in the project root (already in `.gitignore`):
+```bash
+GITHUB_TOKEN=your_personal_access_token
+SNYK_TOKEN=your_snyk_token
+SEMGREP_APP_TOKEN=your_semgrep_token
+LHCI_GITHUB_APP_TOKEN=your_lighthouse_token
+```
+
+**Examples:**
+```bash
+# Test the lint step
+./scripts/test-workflows.sh ci lint
+
+# Test security scanning
+./scripts/test-workflows.sh security code-security
+
+# Test dependency updates
+./scripts/test-workflows.sh dependencies security-updates
+```
+
+**Note:** Some actions may behave differently in local Docker environment compared to GitHub-hosted runners. Always verify critical workflows on GitHub Actions as well.
+
+For more information, see the [Local Workflow Testing section](../docs/development.md#local-workflow-testing) in the development guide.

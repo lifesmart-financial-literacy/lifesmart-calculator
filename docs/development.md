@@ -1017,6 +1017,191 @@ class ErrorBoundary extends React.Component<Props, State> {
 
 ---
 
+## Local Workflow Testing
+
+### Testing GitHub Actions Locally with `act`
+
+You can test your GitHub Actions workflows locally before pushing changes using [`act`](https://github.com/nektos/act), which runs GitHub Actions in Docker containers.
+
+#### Installation
+
+**Windows (using Chocolatey):**
+```bash
+choco install act-cli
+```
+
+**macOS (using Homebrew):**
+```bash
+brew install act
+```
+
+**Linux (using the install script):**
+```bash
+curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+```
+
+**Or download from releases:**
+Visit [act releases](https://github.com/nektos/act/releases) and download the appropriate binary for your platform.
+
+#### Prerequisites
+
+1. **Docker Desktop** must be installed and running
+   - Download from [Docker Desktop](https://www.docker.com/products/docker-desktop)
+   - Ensure Docker is running before using `act`
+
+#### Basic Usage
+
+**List all workflows:**
+```bash
+act -l
+```
+
+**Run a specific workflow:**
+```bash
+# Run the CI workflow
+act push
+
+# Run a specific job
+act -j quality-checks
+
+# Run with a specific event
+act pull_request
+```
+
+**Run with environment variables:**
+```bash
+# Set Node.js version
+act -e .github/workflows/ci.yml --env NODE_VERSION=22
+
+# Or use a secrets file
+act --secret-file .secrets
+```
+
+#### Creating a Secrets File
+
+Create a `.secrets` file in your project root (add to `.gitignore`):
+
+```bash
+# .secrets
+GITHUB_TOKEN=your_personal_access_token
+SNYK_TOKEN=your_snyk_token
+SEMGREP_APP_TOKEN=your_semgrep_token
+LHCI_GITHUB_APP_TOKEN=your_lighthouse_token
+```
+
+**Note:** For testing PR creation workflows, you'll need a GitHub Personal Access Token with `repo` permissions.
+
+#### Testing Specific Workflows
+
+**Test CI workflow:**
+```bash
+# Simulate a push event
+act push
+
+# Simulate a pull request
+act pull_request
+
+# Run specific job
+act -j quality-checks
+```
+
+**Test security workflow:**
+```bash
+act -W .github/workflows/security.yml
+```
+
+**Test performance workflow:**
+```bash
+act -W .github/workflows/performance.yml
+```
+
+**Test dependencies workflow:**
+```bash
+act -W .github/workflows/dependencies.yml workflow_dispatch
+```
+
+#### Advanced Options
+
+**Use a specific runner image:**
+```bash
+# Use a larger image with more tools
+act -P ubuntu-latest=catthehacker/ubuntu:act-latest
+```
+
+**Dry run (list what would run):**
+```bash
+act -n
+```
+
+**Verbose output:**
+```bash
+act -v
+```
+
+**Run with matrix strategy:**
+```bash
+act -j test --matrix node-version:22
+```
+
+#### Limitations
+
+- Some actions may not work perfectly in local Docker environment
+- Secrets need to be provided manually (use `.secrets` file)
+- Some services (like GitHub API) may behave differently
+- Large Docker images may take time to download initially
+
+#### Troubleshooting
+
+**Docker not running:**
+```bash
+# Start Docker Desktop, then retry
+act -l
+```
+
+**Permission issues:**
+```bash
+# On Linux/Mac, ensure Docker permissions are correct
+sudo usermod -aG docker $USER
+```
+
+**Workflow not found:**
+```bash
+# Specify the workflow file explicitly
+act -W .github/workflows/ci.yml
+```
+
+**Node version mismatch:**
+```bash
+# Override Node version in environment
+act --env NODE_VERSION=22
+```
+
+#### Example: Testing the Lint Step
+
+```bash
+# Run just the lint job from CI workflow
+act -j lint
+
+# Or run the entire quality-checks job
+act -j quality-checks
+```
+
+#### Example: Testing Security Updates
+
+```bash
+# Test the security updates job
+act -W .github/workflows/dependencies.yml -j security-updates
+
+# With secrets
+act -W .github/workflows/dependencies.yml -j security-updates --secret-file .secrets
+```
+
+#### VS Code Integration
+
+For a better experience, consider using the [GitHub Local Actions extension](https://marketplace.visualstudio.com/items?itemName=SanjulaGanepola.github-local-actions) which provides a UI for running workflows directly in VS Code.
+
+---
+
 ## Git Workflow
 
 ### Branch Strategy
