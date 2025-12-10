@@ -1,8 +1,8 @@
-import React from 'react';
-import CreditCardCalculator from './components/CreditCardCalculator';
+import React from "react";
+import CreditCardCalculator from "./components/CreditCardCalculator";
 
 export interface AppConfig {
-  mode: 'auto' | 'light' | 'dark';
+  mode: "auto" | "light" | "dark";
   transparentBackground: boolean;
   version: string;
   source: string;
