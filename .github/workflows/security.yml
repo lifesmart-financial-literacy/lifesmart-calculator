@@ -61,6 +61,10 @@ jobs:
   code-security:
     name: 🛡️ Code Security Analysis
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
     timeout-minutes: 15
 
     steps:
@@ -208,6 +212,9 @@ jobs:
   security-alerts:
     name: 🚨 Security Alerts
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
     needs: [dependency-scan, code-security, secrets-scan]
     if: always() && (needs.dependency-scan.result == 'failure' || needs.code-security.result == 'failure' || needs.secrets-scan.result == 'failure')
 
