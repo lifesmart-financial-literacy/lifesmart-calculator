@@ -370,10 +370,9 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({
                   darkMode ? "text-gray-300" : "text-gray-600"
                 }`}
               >
-                Calculate your annual credit card interest costs and compare
-                them to potential investment returns. Optimize your financial
-                strategy by understanding the true cost of carrying credit card
-                debt.
+                Calculate your annual credit card interest costs and compare them to potential investment returns. Understanding how credit card debt impacts your finances helps you make smarter decisions across all your borrowing needs—from everyday purchases to major investments like your next vehicle.
+                <br />
+                See how much you could save by eliminating high-interest debt and redirecting those funds toward what matters most. Get ready for an innovative program that will help you keep more of what you earn and accelerate your financial goals.
               </p>
             </div>
             {/* Only show toggle if mode is auto */}
