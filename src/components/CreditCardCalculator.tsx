@@ -372,6 +372,7 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({
               >
                 Calculate your annual credit card interest costs and compare them to potential investment returns. Understanding how credit card debt impacts your finances helps you make smarter decisions across all your borrowing needs—from everyday purchases to major investments like your next vehicle.
                 <br />
+                <br />
                 See how much you could save by eliminating high-interest debt and redirecting those funds toward what matters most. Get ready for an innovative program that will help you keep more of what you earn and accelerate your financial goals.
               </p>
             </div>
@@ -379,41 +380,39 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({
             {config.mode === "auto" && (
               <button
                 onClick={() => setDarkMode(!darkMode)}
-                className={`relative w-14 h-8 rounded-full transform transition-all duration-500 ease-in-out focus:outline-none focus:ring-4 focus:ring-opacity-50 ${
+                className={`relative w-20 h-10 rounded-full transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                   darkMode
-                    ? "bg-gradient-to-r from-purple-600 to-indigo-600 focus:ring-purple-300"
-                    : "bg-gradient-to-r from-purple-400 to-indigo-400 focus:ring-purple-300"
-                } shadow-lg hover:shadow-xl hover:scale-105`}
+                    ? "bg-slate-800 focus:ring-slate-400"
+                    : "bg-amber-500 focus:ring-amber-400"
+                } shadow-lg hover:shadow-xl`}
                 title={
                   darkMode ? "Switch to light mode" : "Switch to dark mode"
                 }
                 type="button"
+                aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
               >
-                {/* Toggle Circle */}
-                <div
-                  className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transform transition-all duration-500 ease-in-out ${
-                    darkMode ? "translate-x-7" : "translate-x-0"
-                  }`}
-                  style={{
-                    willChange: "transform",
-                  }}
-                >
-                  <div className="flex items-center justify-center h-full w-full relative">
-                    <div
-                      className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${
-                        darkMode ? "opacity-0 scale-0" : "opacity-100 scale-100"
-                      }`}
-                    >
-                      <IoSunny className="text-yellow-500 text-base" />
-                    </div>
-                    <div
-                      className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${
-                        darkMode ? "opacity-100 scale-100" : "opacity-0 scale-0"
-                      }`}
-                    >
-                      <IoMoon className="text-purple-600 text-base" />
-                    </div>
-                  </div>
+                {/* Background icons on track */}
+                <div className="absolute inset-0 flex items-center justify-between px-2.5 pointer-events-none">
+                  <IoSunny
+                    className={`w-4 h-4 transition-all duration-300 ${
+                      darkMode
+                        ? "opacity-0 scale-50"
+                        : "opacity-100 scale-100"
+                    }`}
+                    style={{
+                      color: darkMode ? "#fbbf24" : "#ffffff",
+                    }}
+                  />
+                  <IoMoon
+                    className={`w-4 h-4 transition-all duration-300 ${
+                      darkMode
+                        ? "opacity-100 scale-100"
+                        : "opacity-0 scale-50"
+                    }`}
+                    style={{
+                      color: darkMode ? "#ffffff" : "#1e293b",
+                    }}
+                  />
                 </div>
               </button>
             )}
