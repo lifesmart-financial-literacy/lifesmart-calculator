@@ -966,44 +966,6 @@ const CreditCardCalculator: React.FC<CreditCardCalculatorProps> = ({
                 </div>
               </div>
             </div>
-
-            {/* Bottom Summary */}
-            <div
-              className={`mt-6 p-6 rounded-lg text-center ${
-                darkMode
-                  ? "bg-gradient-to-r from-purple-900/30 to-indigo-900/30 border border-purple-700/30"
-                  : "bg-gradient-to-r from-purple-100 to-indigo-100 border border-purple-300"
-              }`}
-            >
-              <p
-                className={`text-sm md:text-base mb-2 ${
-                  darkMode ? "text-gray-300" : "text-gray-700"
-                }`}
-              >
-                By switching to SPZero's 0% APR card, you could save
-              </p>
-              <p
-                className={`text-2xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent ${
-                  isAnimating ? "animate-pulse" : ""
-                }`}
-              >
-                $
-                {(
-                  annualInterest * (investmentInputs.timePeriod || 10)
-                ).toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </p>
-              <p
-                className={`text-sm md:text-base mt-2 ${
-                  darkMode ? "text-gray-300" : "text-gray-700"
-                }`}
-              >
-                over the next {investmentInputs.timePeriod || 10} years that
-                would have been lost to interest payments
-              </p>
-            </div>
           </div>
         </div>
       </div>
